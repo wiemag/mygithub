@@ -41,10 +41,14 @@ DEPENDENCIES
 
 USAGE EXAMPLES
 
-Here's a trick that will let you download all the latest zip's of your repos:
+(1)  Here's a trick that will let you download all the latest zip's of your repos:
 
 	mygithub -o MYSELF -f README.md -z
 
 - MYSELF is of course you.
 - README.md is a file name that will be used to look for a repo that contains it. Presumably all repos have it.
 - The "z" flag downloads the latest <REPO>.zip file.
+
+(2)  This way you will download a repo: the latest release, the latest files, and a package build if it exists.
+
+	mygithub -o MYSELT -r MYREPO -gzp

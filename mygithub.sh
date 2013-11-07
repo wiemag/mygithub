@@ -113,9 +113,10 @@ if [[ -n "$REPO" ]]; then
 		x="PKGBUILD"
 		echo -e "Looking for \e[1m${x}s\e[0m..."
 		for f in $REPO; do
+			printf "%5d.  %s " $((++i)) "${x}.${f}"
 			curl -silent -o "${x}.${f}" -L \
 				-fail "https://raw.github.com/${OWNER}/${x}s/master/${x}.${f}"
-			[[ $? == 0 ]] && printf "%5d.  %s downloaded.\n" $((++i)) "${x}.${f}"
+			[[ $? == 0 ]] && echo "downloaded." || echo "not found."
 		done
 	fi
 fi
