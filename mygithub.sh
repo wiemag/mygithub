@@ -2,30 +2,36 @@
 # by Wiesław Magusiak, 2013-11-05
 # Download your stuff from github.com
 #
-VERSION=0.01
+VERSION=0.02
 function usage () {
 	echo -ne "\n\e[1m${0##*/}\e[0m [\e[1m-u \e[0;4mOWNER\e[0m] ["
 	echo -e "\e[1m-r \e[0;4mREPO\e[0m] [\e[1m-f \e[0;4mFILE\e[0m]"
+	echo -e "version v$VERSION"
 	echo -e "\tOWNER defaults to \$USER."
+	echo -e "\t\"-p\" - look for and download a REPO package build"
+	echo -e "\t\"-g\" - look for and download the latest REPO release tar.gz"
+	echo -e "\t\"-z\" - download the latest REPO package zipped"
 	echo -e "\tAt least one of the REPO and FILE pair must be invoked."
 }
 
-while getopts "o:r:f:pzvh" flag; do
+while getopts "o:r:f:pgzvh" flag; do
 	case $flag in
 		o) OWNER="$OPTARG";;
 		r) REPO="$OPTARG";;
 		f) FILE="$OPTARG";;
 		p) PKG=1;;
-		z) GZIP=1;;			# Download a gzipped repo
+		g) GZIP=1;;			# Download a gzipped REPO
+		z) ZIP=1;;
 		v) echo -e "\n\t${0##*/}, v$VERSION"; exit;;
 		h) usage; exit;;
 	esac
 done
 FILE=${FILE=""}; REPO=${REPO-""}
 WWW="github.com"/${OWNER-$USER}
-WWW=${WWW%/}
-[[ -n "$REPO" && -z "$FILE" ]] && GZIP=1 || GZIP=${GZIP-0}
+#WWW=${WWW%/}
 PKG=${PKG-0}
+[[ -n "$REPO" && -z "$FILE" ]] && GZIP=1 || GZIP=${GZIP-0}
+ZIP=${ZIP-0}
 
 if [[ -z "$FILE" && -z "$REPO" ]]; then
 	usage
@@ -92,6 +98,13 @@ if [[ -n "$REPO" ]]; then
 				#https://github.com/${OWNER}/${REPO}/archive/${TAG}.tar.gz
 				#https://codeload.github.com/${OWNER}/${REPO}/tar.gz/${TAG}
 			fi
+		done
+	fi
+	if [[ $ZIP == 1 ]]; then
+		echo "Downloading latest zip's..."
+		for f in $REPO; do 
+			echo -e "\t${f}.zip"
+			curl --silent --fail -o ${f}.zip -L "https://${WWW}/${f}/archive/master.zip"
 		done
 	fi
 	if [[ $PKG == 1 ]]; then
