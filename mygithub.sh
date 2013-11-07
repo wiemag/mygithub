@@ -2,7 +2,7 @@
 # by Wiesław Magusiak, 2013-11-05
 # Download your stuff from github.com
 #
-VERSION=0.02
+VERSION=0.03
 function usage () {
 	echo -ne "\n\e[1m${0##*/}\e[0m [\e[1m-u \e[0;4mOWNER\e[0m] ["
 	echo -e "\e[1m-r \e[0;4mREPO\e[0m] [\e[1m-f \e[0;4mFILE\e[0m]"
@@ -74,7 +74,7 @@ if [[ -z "$REPO" ]]; then
 		printf "%5d.  %s %$((${#f}-${LEN}-1))s " $((++i)) ${f} " "
 		curl -silent -o "${FILE}_in_${f}" -L -fail "https://raw.${WWW}/${f}/master/${FILE}"
 		if [[ $? == 0 ]]; then
-			echo -e "\e[1mFound and downloaded.\e[0m"
+			echo "Found and downloaded."
 			REPO="${REPO} ${f}"
 		else
 			echo Not found.
@@ -82,18 +82,18 @@ if [[ -z "$REPO" ]]; then
 		#y=${y}"\n"$f:$(curl -silent -L "https://${WWW}/${f}" | grep "blob/master" | \
 		#	sed "s/^.*master\///"|sed "s/\".*$//"|grep $FILE)
 	done
-	#REPO=$(echo -e "$y"|grep -v :$|cut -d: -f1) 		# List of repos holding $FILE
 fi
 
 if [[ -n "$REPO" ]]; then
 	if [[ $GZIP == 1 ]]; then
-		echo "Downloading tar.gz's..."
+		i=0
+		echo -e "Downloading \e[1mtar.gz's\e[0m..."
 		for f in $REPO; do 
 			y=$(curl -silent -L https://${WWW}/${f}/releases |grep -m1 tar.gz|cut -d\" -f2)
 			TAG=${y##*/}; TAG=${TAG%.tar.gz}
 			if [[ -n $TAG ]]; then
 				#echo $y
-				echo -e "\t${f} $TAG"
+				printf "%5d.  %s %s\n" $((++i)) ${f} $TAG
 				curl --silent --fail -o ${f}_${y##*/} -L https://github.com${y}
 				#https://github.com/${OWNER}/${REPO}/archive/${TAG}.tar.gz
 				#https://codeload.github.com/${OWNER}/${REPO}/tar.gz/${TAG}
@@ -101,19 +101,21 @@ if [[ -n "$REPO" ]]; then
 		done
 	fi
 	if [[ $ZIP == 1 ]]; then
-		echo "Downloading latest zip's..."
+		i=0
+		echo -e "Downloading latest \e[1mzip's\e[0m..."
 		for f in $REPO; do 
-			echo -e "\t${f}.zip"
+			printf "%5d.  %s\n" $((++i)) "${f}.zip"
 			curl --silent --fail -o ${f}.zip -L "https://${WWW}/${f}/archive/master.zip"
 		done
 	fi
 	if [[ $PKG == 1 ]]; then
+		i=0
 		x="PKGBUILD"
-		echo "Looking for ${x}s..."
+		echo -e "Looking for \e[1m${x}s\e[0m..."
 		for f in $REPO; do
 			curl -silent -o "${x}.${f}" -L \
 				-fail "https://raw.github.com/${OWNER}/${x}s/master/${x}.${f}"
-			[[ $? == 0 ]] && echo -e "\t${x}.${f} downloaded."
+			[[ $? == 0 ]] && printf "%5d.  %s downloaded.\n" $((++i)) "${x}.${f}"
 		done
 	fi
 fi

@@ -38,6 +38,10 @@ DEPENDENCIES
 - cut
 
 
-FURTHER DEVELOPMENT
+USAGE EXAMPLES
 
-Add a flag telling the script to download the latest version of a zipped repository (as an addition to the already downloaded latest release).
+Here's a trick that will let you download all the latest zip's of your repos:
+	mygithub -o MYSELF -f README.md -z
+- MYSELF is of course you.
+- README.md is a file name that will be used to look for a repo that contains it. Presumably all repos have it.
+- The "z" flag downloads the latest <REPO>.zip file.
