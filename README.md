@@ -4,19 +4,6 @@ mygithub
 A script to download my (your) packages/scripts/files from github.com.
 
 
-DESCRIPTION
-
-The script first checks if there is a package build (PKGBUILD) at 
-	http://github.com/<OWNER>/PKGBUILDs/
-If there is one, the script downloads it and finishes.
-Note that the package build name checked is "PKGBUILD.<REPO>".
-If the package build is not found, the script goes on to check if a repository exists for the given name
-	http://github.com/<OWNER>/<REPO>/
-and if the repository does exist, the script downloads a gzipped version or a raw file.
-
-Searching may also be done by specifying a file name to look for. In such a case, the script looks for a script in a repository, if specified, or on the entire github tree for the given owner/user.
-
-
 USAGE
 
 	mygithub [-o OWNER] [-r REPO] [-f FILENAME] [-p] [-z] [-h]
@@ -31,8 +18,26 @@ USAGE
 At least one of the "-r" and "-f" flags must be invoked for the script to know what to look for.
 
 
-DEPENDENCES
+DESCRIPTION
+
+The script looks for the file "FILENAME" in the given repository and downloads it. If the repository is not defined, the script first makes a list of existing repositories that contain the looked-for filename.
+
+If FILENAME is not defined, the script looks for the REPO and downloads its latest .tar.gz release, setting the "-z" flag in the process. 
+
+The "-p" flag tells the script to look for a package build file in
+	http://github.com/<OWNER>/PKGBUILDs/
+If there is one there, the script downloads it.
+
+Note that the package build name checked is "PKGBUILD.<REPO>".
+
+
+DEPENDENCIES
 
 - curl: for downloading
 - grep
 - cut
+
+
+FURTHER DEVELOPMENT
+
+Add a flag telling the script to download the latest version of a zipped repository (as an addition to the already downloaded latest release).
